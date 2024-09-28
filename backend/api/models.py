@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member related information."""
+    """Model used for user authentication and related information."""
 
     username = models.CharField(
         max_length=30,
@@ -33,5 +33,5 @@ class Task(models.Model):
         ]
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField(max_length=250, blank=True)
-    status = models.CharField(max_length=5, choices=TASK_STATUS_CHOICES)
+    status = models.CharField(max_length=5, choices=TASK_STATUS_CHOICES, default=TASK_STATUS_CHOICES[0])
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)

@@ -140,8 +140,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
+USER_SERIALIZER = 'api.serializers.UserSerializer'
 DJOSER = {
     'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer'
+        'user_create': 'api.serializers.UserCreateSerializer',
+        'current_user': USER_SERIALIZER,
     }
 }
