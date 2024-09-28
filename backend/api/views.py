@@ -7,7 +7,7 @@ from rest_framework.response import Response
 # Create your views here.
 
 
-class TaskView(ListCreateAPIView):
+class TasksView(ListCreateAPIView):
     serializer_class = TaskSerializer
 
     def get_serializer_context(self):
@@ -38,4 +38,13 @@ class TaskView(ListCreateAPIView):
     
       
             
-        
+class TaskView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
+    def get_queryset(self):
+        user = self.request.user
+        tasks = Task.objects.filter(user=user)
+        return tasks
