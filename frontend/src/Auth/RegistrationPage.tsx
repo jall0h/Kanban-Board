@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../services/apiClient";
 
 const RegistrationPage = () => {
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -40,9 +40,9 @@ const RegistrationPage = () => {
       .then((res) => {
         console.log(res);
         setMessage("Account Successfully Created");
-        // setTimeout(() => {
-        //   navigate("/login");
-        // }, 2000);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);

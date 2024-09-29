@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import apiClient from "../services/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -7,6 +8,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
   const handleLogin = () => {
     if (usernameRef && passwordRef) {
       apiClient
@@ -18,7 +20,7 @@ const LoginPage = () => {
           localStorage.setItem("accessToken", res.data.access);
           localStorage.setItem("refreshToken", res.data.refresh);
           console.log(res.data);
-          // window.location.reload();
+          navigate("/");
         })
         .catch((err) => {
           console.log(err);
