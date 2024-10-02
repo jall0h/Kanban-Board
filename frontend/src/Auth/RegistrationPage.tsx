@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../services/apiClient";
+import Form from "./Form";
+import useErrorStore from "./store";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -10,24 +12,16 @@ const RegistrationPage = () => {
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
+  const {
+    errors,
+    setUsernameError,
+    setPasswordError,
+    setEmailError,
+    setFirstNameError,
+    setLastNameError,
+    resetErrors,
+  } = useErrorStore();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setUsernameError("");
-    setPasswordError("");
-    setEmailError("");
-    setLastNameError("");
-    setFirstNameError("");
-    handleRegister();
-  };
   const handleRegister = () => {
     apiClient
       .post("/auth/users/", {
@@ -39,89 +33,31 @@ const RegistrationPage = () => {
       })
       .then((res) => {
         console.log(res);
-        setMessage("Account Successfully Created");
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        resetErrors();
+        navigate("/login");
       })
       .catch((err) => {
         console.log(err);
-        setError(err.response.data?.detail);
         setUsernameError(err.response.data.username?.[0]);
         setPasswordError(err.response.data.password?.[0]);
         setEmailError(err.response.data.email?.[0]);
-        setLastNameError(err.response.data.first_name?.[0]);
-        setFirstNameError(err.response.data.last_name?.[0]);
+        setLastNameError(err.response.data.last_name?.[0]);
+        setFirstNameError(err.response.data.first_name?.[0]);
       });
   };
 
   return (
     <>
-      {error && <p>{error}</p>}
-      {message && <p>{message}</p>}
-      <div className="form-container">
-        <form
-          id="register-form"
-          onSubmit={(event) => {
-            handleSubmit(event);
-          }}
-        >
-          <div>
-            {firstNameError && <p>{firstNameError}</p>}
-            <input
-              className="input"
-              type="text"
-              name="first name"
-              placeholder="Enter First Name"
-              ref={firstNameRef}
-            ></input>
-          </div>
-          <div>
-            {lastNameError && <p>{lastNameError}</p>}
-            <input
-              className="input"
-              type="text"
-              name="last name"
-              placeholder="Enter Last Name"
-              ref={lastNameRef}
-            ></input>
-          </div>
-          <div>
-            {emailError && <p>{emailError}</p>}
-            <input
-              className="input"
-              type="text"
-              name="email"
-              placeholder="Enter Email"
-              ref={emailRef}
-            ></input>
-          </div>
-          <div>
-            {usernameError && <p>{usernameError}</p>}
-            <input
-              className="input"
-              type="text"
-              name="username"
-              placeholder="Enter Username"
-              ref={usernameRef}
-            ></input>
-          </div>
-          <div>
-            {passwordError && <p>{passwordError}</p>}
-            <input
-              className="input"
-              type="password"
-              name="username"
-              placeholder="Enter Password"
-              ref={passwordRef}
-            ></input>
-          </div>
-          <div className="button ">
-            <button className="btn__primary" type="submit">
-              Register
-            </button>
-          </div>
-        </form>
+      <div className="container text-center mt-5">
+        <Form
+          formType={"register"}
+          handleSubmit={() => handleRegister()}
+          usernameRef={usernameRef}
+          passwordRef={passwordRef}
+          emailRef={emailRef}
+          firstNameRef={firstNameRef}
+          lastNameRef={lastNameRef}
+        />
       </div>
     </>
   );

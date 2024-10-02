@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import apiClient from "../services/apiClient";
 import { useNavigate } from "react-router-dom";
+import Form from "./Form";
+import useErrorStore from "./store";
 
 const LoginPage = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const { errors, setUsernameError, setPasswordError } = useErrorStore();
   const navigate = useNavigate();
   const handleLogin = () => {
     if (usernameRef && passwordRef) {
@@ -24,7 +24,6 @@ const LoginPage = () => {
         })
         .catch((err) => {
           console.log(err);
-          setError(err.response.data?.detail);
           setUsernameError(err.response.data.username?.[0]);
           setPasswordError(err.response.data.password?.[0]);
           localStorage.removeItem("accessToken");
@@ -34,41 +33,12 @@ const LoginPage = () => {
   };
   return (
     <div className="container text-center mt-5">
-      {error && <p>{error}</p>}
-      <div className="row ">
-        <div className="col-12 ">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-          >
-            {usernameError && <p>{usernameError}</p>}
-            <div className="input-group  col-auto mb-3">
-              <input
-                type="text"
-                name="username"
-                placeholder="Enter Username"
-                className="form-control"
-                ref={usernameRef}
-              />
-            </div>
-            {passwordError && <p>{passwordError}</p>}
-            <div className="input-group mb-3">
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter Password"
-                className="form-control"
-                ref={passwordRef}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
-        </div>
-      </div>
+      <Form
+        formType={"login"}
+        handleSubmit={() => handleLogin()}
+        usernameRef={usernameRef}
+        passwordRef={passwordRef}
+      />
     </div>
   );
 };
